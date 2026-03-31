@@ -1,45 +1,72 @@
-import userService from "../services/userService.js";
+import { registerUserService, loginUserService , deleteUserService  , getAllUserService} from "../services/user.service.js";
+import { StatusCodes } from "http-status-codes";
 
-const registerUser = async (req, res) => {
+
+export const getAllUsers = async (req, res) => {
   try {
-    await userService.registerUser(req.body);
-    res.status(201).json({ message: "User registered successfully" });
+    const users = await getAllUserService();
+
+    return res.status(StatusCodes.OK).json({
+      message: "Users fetched successfully",
+      data: users,
+    });
+
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: error.message,
+    });
   }
 };
 
-const loginUser = async (req, res) => {
+
+export const registerUser = async (req, res) => {
+  try {
+    const result = await registerUserService(req.body);
+
+    return res.status(StatusCodes.CREATED).json({
+      message: result.message,
+    });
+
+  } catch (error) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: error.message,
+    });
+  }
+};
+
+
+export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const { token, user } = await userService.loginUser(email, password);
 
-    res.status(200).json({
-      message: "Login successful",
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role
-      }
+    const result = await loginUserService(email, password);
+
+    return res.status(StatusCodes.OK).json({
+      message: result.message,
+      data: result.user,
     });
+
   } catch (error) {
-    res.status(401).json({ message: error.message });
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      message: error.message,
+    });
   }
 };
 
-const deleteUser = async (req, res) => {
+
+export const deleteUser = async (req, res) => {
   try {
-    await userService.deleteUser(req.user.userId);
-    res.status(200).json({ message: "Account deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+    const { id } = req.params;
 
-export {
-  registerUser,
-  loginUser,
-  deleteUser
+    const result = await deleteUserService(id);
+
+    return res.status(StatusCodes.OK).json({
+      message: result.message,
+    });
+
+  } catch (error) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: error.message,
+    });
+  }
 };

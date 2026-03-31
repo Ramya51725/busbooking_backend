@@ -1,11 +1,13 @@
 import { client } from "../index.js";
 import { MONGO_DATABASE } from "../index.js";
+import { ObjectId } from "mongodb";
+
 
 export const getBusesService = async (from, to, date) => {
   const query = {};
 
   if (from) {
-    query.from = { $regex: from, $options: "i" }  // $options: "i" ignore case
+    query.from = { $regex: from, $options: "i" }  
   };
   if (to){
     query.to = { $regex: to, $options: "i" }
@@ -21,4 +23,18 @@ export const getBusesService = async (from, to, date) => {
     .toArray();
 };
 
+
+export const getBusByIdService  = async (id) => {
+    const data = await client
+    .db(MONGO_DATABASE)
+    .collection("buses")
+    .findOne({_id : new ObjectId(id)})
+
+    if (data) {
+        return  data
+    }
+    else{
+        return null
+    }
+}
 

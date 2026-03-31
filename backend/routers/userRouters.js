@@ -1,13 +1,13 @@
 import express from "express";
-const router = express.Router();
+import { registerUser , loginUser , deleteUser , getAllUsers} from "../controllers/auth.controller.js";
+import validateBody from "../middleware/validate.js";
+import { loginSchema,registerSchema } from "../validation/user.validation.js";
 
-import * as authController from "../controllers/authController.js";
-import { authMiddleware } from "../middleware/authMiddleware.js";
-import validate from "../middleware/validate.js";
-import { userSchema } from "../validations/userValidation.js";
+const userRouter = express.Router();
 
-router.post("/register", validate(userSchema), authController.registerUser);
-router.post("/login", authController.loginUser);
-router.delete("/delete-account", authMiddleware, authController.deleteUser);
+userRouter.get("/", getAllUsers);
+userRouter.post("/register",validateBody(registerSchema), registerUser);
+userRouter.post("/login", validateBody(loginSchema),loginUser);
+userRouter.delete("/delete-account", deleteUser);
 
-export default router;
+export default userRouter;

@@ -4,7 +4,7 @@ import cors from 'cors'
 import * as dotenv from 'dotenv'
 import http, { createServer } from 'http'
 import busRouter from './routers/bus.router.js'
-// import productRouter from './routers/product.router.js'
+import userRouter from './routers/userRouters.js'
 dotenv.config()
 
 
@@ -19,7 +19,8 @@ export const client = new MongoClient(MONGO_URL)
 client.connect()
 
 
-app.use("/api" , busRouter)
+app.use("/api/buses" , busRouter)
+app.use("/api/users",userRouter)
 
 app.get ("/", (req, res) => {
     res.send ({
