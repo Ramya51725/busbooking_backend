@@ -1,7 +1,6 @@
 import { client, MONGO_DATABASE } from "../index.js";
-import { hashPassword, comparePassword } from "../utils/auth.js";
-
-
+import { hashPassword, comparePassword , generateToken} from "../utils/auth.js";
+import {ObjectId} from 'mongodb'
 
 export const getAllUserService = async () => {
 
@@ -55,10 +54,6 @@ export const registerUserService = async (userData) => {
 
 export const loginUserService = async (email, password) => {
 
-  if (!email || !password) {
-    throw new Error("Email and password are required");
-  }
-
   const user = await client
     .db(MONGO_DATABASE)
     .collection("users")
@@ -74,18 +69,25 @@ export const loginUserService = async (email, password) => {
     throw new Error("Invalid email or password");
   }
 
-  const User = {
+  const token = generateToken({
     id: user._id,
-    name: user.name,
     email: user.email,
     role: user.role
-  };
+  });
 
   return {
     message: "Login successful",
-    user: User,
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role
+    },
+    token
   };
 };
+
+
 
 export const deleteUserService = async (id) => {
 

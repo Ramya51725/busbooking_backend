@@ -3,6 +3,21 @@ import { MONGO_DATABASE } from "../index.js";
 import { ObjectId } from "mongodb";
 
 
+export const createBus  = async(payload) => {
+  const data = await client 
+  .db(MONGO_DATABASE)
+  .collection("buses")
+  .insertOne(payload)
+
+  if (data.insertedId){
+      return{
+          result : data,
+          message : "bus added successfully"
+      }
+  }
+}
+
+
 export const getBusesService = async (from, to, date) => {
   const query = {};
 
@@ -38,3 +53,39 @@ export const getBusByIdService  = async (id) => {
     }
 }
 
+
+export const updateSeatsService = async (busId, seats, action) => {
+  let updateQuery = {};
+
+  if (action === "add") {
+    updateQuery = {
+      $push: {
+        bookedSeats: { $each: seats },
+      },
+      $inc: {
+        seatsAvailable: -seats.length,
+      },
+    };
+  }
+
+  if (action === "remove") {
+    updateQuery = {
+      $pull: {
+        bookedSeats: { $in: seats },
+      },
+      $inc: {
+        seatsAvailable: seats.length,
+      },
+    };
+  }
+
+  const result = await client
+    .db(MONGO_DATABASE)
+    .collection("buses")
+    .updateOne(
+      { _id: new ObjectId(busId) },
+      updateQuery
+    );
+
+  return result;
+};

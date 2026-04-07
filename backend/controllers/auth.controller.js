@@ -44,7 +44,9 @@ export const loginUser = async (req, res) => {
     return res.status(StatusCodes.OK).json({
       message: result.message,
       data: result.user,
+      token: result.token 
     });
+    
 
   } catch (error) {
     return res.status(StatusCodes.UNAUTHORIZED).json({

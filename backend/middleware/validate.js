@@ -6,6 +6,7 @@ const validateBody = (schema) => {
         const {error} = schema.validate(req.body)
 
         if (error) {
+                  console.log("Validation Error Details:", error.details); // 👈 DEBUG
             return res.status(StatusCodes.BAD_REQUEST).json({error : error.message})
         }
         next()
