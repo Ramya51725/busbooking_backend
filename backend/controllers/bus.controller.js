@@ -1,5 +1,5 @@
 // controllers/bus.controller.js
-import { getBusesService , getBusByIdService , createBus , updateSeatsService } from "../services/bus.service.js";
+import { getBusesService , getBusByIdService , createBus , updateSeatsService , getAllBuses, deleteBuses  } from "../services/bus.service.js";
 import {StatusCodes} from 'http-status-codes'
 
 export const getBuses = async (req, res) => {
@@ -17,6 +17,30 @@ export const getBuses = async (req, res) => {
     });
   }
 };
+
+
+export const getAllBus = async (req, res) => {
+  try {
+    const data = await getAllBuses()
+
+    if (data) {
+      res.status(StatusCodes.OK).json(data)
+    }
+    else{
+      res.status(StatusCodes.NOT_FOUND).json({
+        message : "buses not found"
+      })
+    }
+  }
+  catch(err) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message : "internal server error",
+      error : err.message
+    })
+  }
+}
+
+
 
 export const getBusByIds = async (req , res) => {
     const {id } = req.params
@@ -91,6 +115,34 @@ export const updateSeats = async (req, res) => {
       });
   }
 };
+
+
+export const deleteAllBuses = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await deleteBuses(id);
+
+    if (!result || result.deletedCount === 0) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        message: "Bus not found",
+      });
+    }
+
+    res.status(StatusCodes.OK).json({
+      message: "Bus deleted successfully",
+    });
+
+  } catch (err) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "Error deleting bus",
+      error: err.message,
+    });
+  }
+};
+
+
+
 
 
 

@@ -18,6 +18,14 @@ export const createBus  = async(payload) => {
 }
 
 
+export const getAllBuses = async() => {
+   return await client 
+   .db(MONGO_DATABASE)
+   .collection ("buses")
+   .find({})
+   .toArray()
+}
+
 export const getBusesService = async (from, to, date) => {
   const query = {};
 
@@ -54,6 +62,24 @@ export const getBusByIdService  = async (id) => {
 }
 
 
+export const deleteBuses = async (id) => {
+  const data = await client 
+  .db(MONGO_DATABASE)
+  .collection("buses")
+  .deleteOne({_id : new ObjectId (id)})
+
+  if (data.deletedCount === 0){
+     return {
+      message : "can not delete bus"
+     }
+  }
+  else{
+    return {
+      message : "bus deleted successfully"
+    }
+  }
+}
+
 export const updateSeatsService = async (busId, seats, action) => {
   let updateQuery = {};
 
@@ -89,3 +115,5 @@ export const updateSeatsService = async (busId, seats, action) => {
 
   return result;
 };
+
+

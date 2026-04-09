@@ -6,6 +6,7 @@ import http, { createServer } from 'http'
 import busRouter from './routers/bus.router.js'
 import userRouter from './routers/userRouters.js'
 import bookingRouter from './routers/booking.router.js'
+import adminRouter from './routers/admin.routes.js'
 dotenv.config()
 
 
@@ -23,6 +24,9 @@ client.connect()
 app.use("/api/buses" , busRouter)
 app.use("/api/users",userRouter)
 app.use("/api/bookings",bookingRouter)
+app.use("/api/admin", adminRouter)
+
+
 
 app.get ("/", (req, res) => {
     res.send ({

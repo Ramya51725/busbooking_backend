@@ -8,7 +8,7 @@ const bookingRouter = express.Router()
 
 bookingRouter.post("/",verifyJWT,validateBody(bookingSchema),newBookings)
 bookingRouter.get("/",verifyJWT , getUserBookings)
-bookingRouter.patch("/:id" , verifyJWT , cancelBooking)
+bookingRouter.patch("/:id" , verifyJWT,verifyJWT , cancelBooking)
 
 export default bookingRouter
     
